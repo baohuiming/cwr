@@ -42,11 +42,7 @@ def _R0(k):
 
 
 def _alpha(v) -> list:
-    """
-    速度系数
-    :param v: km/h
-    :return:
-    """
+    """速度系数"""
     if v < 120:
         return [0.6 * v / 100]
     elif 120 < v <= 160:
@@ -176,6 +172,7 @@ def compare(S, R, text: str, unit: str):
 
 
 def _sigma_z_max(Rd):
+    """道床顶面最大压应力"""
     m = 1.6  # 应力分布不均匀系数
     return m * Rd / (c.b * c.e1)
 
