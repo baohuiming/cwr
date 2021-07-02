@@ -209,11 +209,12 @@ def structure_check():
     M0 = _M0(k1)
     y0 = _y0(k1, c.D1)
     R0 = _R0(k2)
+    print(f'y0={y0}m,M0={M0}N*m,R0={R0}N')
     # 计算最大动位移、弯矩、枕上压力
     Md = _Md(M0)
     yd = _yd(y0)
     Rd = _Rd(R0)
-    print(f'最大位移为{yd}m。')
+    print(f'yd={yd}m,Md={Md}N*m,Rd={Rd}N')
     # 计算锁定时的轨底、轨头应力（温度应力为零）
     sigma_bottom = Md / c.W_bottom
     sigma_top = Md / c.W_top
@@ -239,17 +240,16 @@ def structure_check():
     compare(sigma_h, sigma_L_allow, '路基应力', 'Pa')
 
 
+# 无缝线路部分
+
 def _sigma_d():
     """钢轨动弯应力"""
     k1, k2 = _k(c.D1), _k(c.D2)
     M0 = _M0(k1)
     Md = _Md(M0)
     sigma_bottom = Md / c.W_bottom
-    sigma_top = Md / c.W_top
-    return max(sigma_bottom, sigma_top)
+    return sigma_bottom
 
-
-# 无缝线路部分
 
 def _td_allow():
     """允许降温幅度"""
@@ -419,17 +419,23 @@ def cwr():
     ls = _ls(maxPt)
     print(f'伸缩区长度：{ls}m。')
     # 从锁定轨温至最低轨温
+    print('从锁定轨温至最低轨温时：')
     maxPt_0 = _Pt(te - c.t_min)
+    print(f'最大温度力：{maxPt_0}N')
     # 长轨条一端的伸缩量
     lambda_long = _lambda_long(maxPt_0)
     # 标准轨一端的伸缩量
     lambda_short = _lambda_short(maxPt_0)
+    print(f'长轨条一端的伸缩量={lambda_long}m,标准轨一端的伸缩量={lambda_short}')
     # 从锁定轨温至最高轨温
+    print('从锁定轨温至最高轨温时：')
     maxPt_1 = _Pt(c.t_max - te)
+    print(f'最大温度力：{maxPt_1}N')
     # 长轨条一端的伸缩量
     lambda_long1 = _lambda_long(maxPt_1)
     # 标准轨一端的伸缩量
     lambda_short1 = _lambda_short(maxPt_1)
+    print(f'长轨条一端的伸缩量={lambda_long1}m,标准轨一端的伸缩量={lambda_short1}')
     # 预留轨缝
     a0 = _a0(lambda_long, lambda_short, lambda_long1, lambda_short1)
     print(f'预留轨缝为{a0}m。')
