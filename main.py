@@ -426,7 +426,7 @@ def cwr():
     lambda_long = _lambda_long(maxPt_0)
     # 标准轨一端的伸缩量
     lambda_short = _lambda_short(maxPt_0)
-    print(f'长轨条一端的伸缩量={lambda_long}m,标准轨一端的伸缩量={lambda_short}')
+    print(f'长轨条一端的伸缩量={lambda_long}m,标准轨一端的伸缩量={lambda_short}m')
     # 从锁定轨温至最高轨温
     print('从锁定轨温至最高轨温时：')
     maxPt_1 = _Pt(c.t_max - te)
@@ -435,7 +435,7 @@ def cwr():
     lambda_long1 = _lambda_long(maxPt_1)
     # 标准轨一端的伸缩量
     lambda_short1 = _lambda_short(maxPt_1)
-    print(f'长轨条一端的伸缩量={lambda_long1}m,标准轨一端的伸缩量={lambda_short1}')
+    print(f'长轨条一端的伸缩量={lambda_long1}m,标准轨一端的伸缩量={lambda_short1}m')
     # 预留轨缝
     a0 = _a0(lambda_long, lambda_short, lambda_long1, lambda_short1)
     print(f'预留轨缝为{a0}m。')
