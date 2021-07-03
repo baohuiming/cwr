@@ -2,6 +2,7 @@
 # constants
 # 采用国际单位制单位（Pa,m,s,kg）
 
+# default list
 # 轨道部分
 E = 2.1e11  # 钢轨弹性模量
 sigma_s = 457e6  # 钢轨屈服强度
@@ -34,7 +35,6 @@ R = 2000  # 最小曲线半径
 axles_weight = 112.8e3  # 轴重
 axles_wheelbase = 2  # 轴距
 axles_number = 3  # 轴数
-
 l0 = 4.0  # 弹性初始弯曲半波长，通常取4.0m
 f = 0.2e-2  # 容许弯曲矢度
 f_0e = 0.3e-2  # 弹性初始弯曲矢度
@@ -68,6 +68,18 @@ def show_window():
     import tkinter as tk
     from math import ceil
 
+    def set_default():
+        """给文本框赋值"""
+        for idx, row in enumerate(data):
+            entrys[idx].delete(0, tk.END)
+            entrys[idx].insert(1, data[idx][1])
+
+    def confirm():
+        window.quit()
+
+    def cancel():
+        quit()
+
     data = load_csv()
     window = tk.Tk()
     window.title('Ⅲ型轨枕无缝线路设计器 作者：鲍慧明')
@@ -81,16 +93,30 @@ def show_window():
     tk.Label(window, text="数值", font=ft).grid(row=0, column=4, padx=padx, pady=pady)
     tk.Label(window, text="解释", font=ft).grid(row=0, column=5, padx=padx, pady=pady)
     _l1_ = ceil(len(data) / 2)
+    entrys = []
     for idx, row in enumerate(data[:_l1_]):
         tk.Label(window, text=row[0]).grid(row=idx + 1, column=0, padx=padx, pady=pady)
-        tk.Label(window, text=row[1]).grid(row=idx + 1, column=1, padx=padx, pady=pady)
+        entrys.append(tk.Entry(window))
+        entrys[-1].grid(row=idx + 1, column=1, padx=padx, pady=pady)
         tk.Label(window, text=row[2]).grid(row=idx + 1, column=2, padx=padx, pady=pady)
     for idx, row in enumerate(data[_l1_:]):
         tk.Label(window, text=row[0]).grid(row=idx + 1, column=3, padx=padx, pady=pady)
-        tk.Label(window, text=row[1]).grid(row=idx + 1, column=4, padx=padx, pady=pady)
+        entrys.append(tk.Entry(window))
+        entrys[-1].grid(row=idx + 1, column=4, padx=padx, pady=pady)
         tk.Label(window, text=row[2]).grid(row=idx + 1, column=5, padx=padx, pady=pady)
+    # 给文本框赋值
+    set_default()
 
-    # 第6步，主窗口循环显示
+    # 确认、取消、恢复默认按钮
+    btn_confirm = tk.Button(window, text='计算', command=confirm)
+    btn_cancel = tk.Button(window, text='取消', command=cancel)
+    btn_default = tk.Button(window, text='默认', command=set_default)
+    btn_confirm.grid(row=len(data) + 1, column=2, ipadx=30, pady=5)
+    btn_cancel.grid(row=len(data) + 1, column=3, ipadx=30, pady=5)
+    btn_default.grid(row=len(data) + 1, column=4, ipadx=30, pady=5)
+
+    # 主窗口循环显示
     window.mainloop()
+
 
 show_window()
