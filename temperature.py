@@ -66,6 +66,3 @@ def get_temperature_by_city(cityname: str) -> dict:
         T = get_temperature_by_id(station_id)
     print(f'自2000年来，最低温度：{T["min"]}℃，最高温度：{T["max"]}℃。')
     return T
-
-
-get_temperature_by_city('珠海')

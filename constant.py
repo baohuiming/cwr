@@ -38,6 +38,25 @@ def show_window():
             entrys[idx].delete(0, tk.END)
             entrys[idx].insert(1, data[idx][1])
 
+    def query():
+        """查气温"""
+        global T
+        from temperature import get_temperature_by_city
+        T = get_temperature_by_city(city.get())
+        # 填入
+        T_MIN.config(text='最低气温：%s℃' % T['min'])
+        T_MAX.config(text='最高气温：%s℃' % T['max'])
+
+    def entry():
+        """填入轨温"""
+        for idx, row in enumerate(data):
+            if row[0] == 't_min':
+                entrys[idx].delete(0, tk.END)
+                entrys[idx].insert(1, T_MIN.cget('text')[5:-1])
+            elif row[0] == 't_max':
+                entrys[idx].delete(0, tk.END)
+                entrys[idx].insert(1, float(T_MAX.cget('text')[5:-1]) + 20)
+
     def confirm():
         """计算按钮操作"""
         # 冻结编辑框
@@ -72,32 +91,45 @@ def show_window():
     window.title('Ⅲ型轨枕无缝线路设计器 作者：鲍慧明')
     padx, pady = 10, 1
     ft = ("新宋体", "14", "bold")
+    # 查轨温
+    tk.Label(window, text="城市：").grid(row=0, column=0, padx=padx, pady=pady)
+    city = tk.Entry(window)
+    city.insert(0, '珠海')
+    city.grid(row=0, column=1)
+    T_MIN = tk.Label(window, text="最低气温：0.0℃")
+    T_MIN.grid(row=0, column=3, padx=padx, pady=pady)
+    T_MAX = tk.Label(window, text="最高气温：39.1℃")
+    T_MAX.grid(row=0, column=4, padx=padx, pady=pady)
     # table head
-    tk.Label(window, text="符号", font=ft).grid(row=0, column=0, padx=padx, pady=pady)
-    tk.Label(window, text="数值", font=ft).grid(row=0, column=1, padx=padx, pady=pady)
-    tk.Label(window, text="解释", font=ft).grid(row=0, column=2, padx=padx, pady=pady)
-    tk.Label(window, text="符号", font=ft).grid(row=0, column=3, padx=padx, pady=pady)
-    tk.Label(window, text="数值", font=ft).grid(row=0, column=4, padx=padx, pady=pady)
-    tk.Label(window, text="解释", font=ft).grid(row=0, column=5, padx=padx, pady=pady)
+    tk.Label(window, text="符号", font=ft).grid(row=1, column=0, padx=padx, pady=pady)
+    tk.Label(window, text="数值", font=ft).grid(row=1, column=1, padx=padx, pady=pady)
+    tk.Label(window, text="解释", font=ft).grid(row=1, column=2, padx=padx, pady=pady)
+    tk.Label(window, text="符号", font=ft).grid(row=1, column=3, padx=padx, pady=pady)
+    tk.Label(window, text="数值", font=ft).grid(row=1, column=4, padx=padx, pady=pady)
+    tk.Label(window, text="解释", font=ft).grid(row=1, column=5, padx=padx, pady=pady)
     _l1_ = ceil(len(data) / 2)
     entrys = []
     for idx, row in enumerate(data[:_l1_]):
-        tk.Label(window, text=row[0]).grid(row=idx + 1, column=0, padx=padx, pady=pady)
+        tk.Label(window, text=row[0]).grid(row=idx + 2, column=0, padx=padx, pady=pady)
         entrys.append(tk.Entry(window))
-        entrys[-1].grid(row=idx + 1, column=1, padx=padx, pady=pady)
-        tk.Label(window, text=row[2]).grid(row=idx + 1, column=2, padx=padx, pady=pady)
+        entrys[-1].grid(row=idx + 2, column=1, padx=padx, pady=pady)
+        tk.Label(window, text=row[2]).grid(row=idx + 2, column=2, padx=padx, pady=pady)
     for idx, row in enumerate(data[_l1_:]):
-        tk.Label(window, text=row[0]).grid(row=idx + 1, column=3, padx=padx, pady=pady)
+        tk.Label(window, text=row[0]).grid(row=idx + 2, column=3, padx=padx, pady=pady)
         entrys.append(tk.Entry(window))
-        entrys[-1].grid(row=idx + 1, column=4, padx=padx, pady=pady)
-        tk.Label(window, text=row[2]).grid(row=idx + 1, column=5, padx=padx, pady=pady)
+        entrys[-1].grid(row=idx + 2, column=4, padx=padx, pady=pady)
+        tk.Label(window, text=row[2]).grid(row=idx + 2, column=5, padx=padx, pady=pady)
     # 给文本框赋值
     set_default()
 
-    # 确认、取消、恢复默认按钮
+    # 查气温、填入轨温、确认、取消、恢复默认按钮
+    btn_query = tk.Button(window, text='查气温', command=query)
+    btn_entry = tk.Button(window, text='填入轨温', command=entry)
     btn_confirm = tk.Button(window, text='计算', command=confirm)
     btn_cancel = tk.Button(window, text='取消', command=cancel)
     btn_default = tk.Button(window, text='默认', command=set_default)
+    btn_query.grid(row=0, column=2, ipadx=30, pady=5)
+    btn_entry.grid(row=0, column=5, ipadx=30, pady=5)
     btn_confirm.grid(row=len(data) + 1, column=2, ipadx=30, pady=5)
     btn_cancel.grid(row=len(data) + 1, column=3, ipadx=30, pady=5)
     btn_default.grid(row=len(data) + 1, column=4, ipadx=30, pady=5)
