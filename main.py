@@ -1,6 +1,16 @@
-from c import show_window
-from c import constants as c
+from constant import constants as c
 from math import exp, cos, sin, tan, pi, sqrt
+
+log = ''
+
+image = None
+im = None
+
+
+def logger(text):
+    global log
+    print(text)
+    log += text + '\n'
 
 
 # 轨道结构部分
@@ -164,12 +174,14 @@ def _Mc_allow():
         return 14e3
 
 
-def compare(S, R, text: str, unit: str):
+def compare(S, R, text: str, unit: str, rate: float = 0.):
     """S为作用效应，R为结构抗力"""
+    S = '%.3f' % (S * 10 ** rate)
+    R = '%.3f' % (R * 10 ** rate)
     if S <= R:
-        print(f'{text}为{S}{unit}，允许{text}为{R}{unit}，故{text}满足要求。')
+        logger(f'{text}为{S}{unit}，允许{text}为{R}{unit}，故{text}满足要求。')
     else:
-        print(f'{text}为{S}{unit}，允许{text}为{R}{unit}，故{text}不满足要求。')
+        logger(f'{text}为{S}{unit}，允许{text}为{R}{unit}，故{text}不满足要求！！！')
 
 
 def _sigma_z_max(Rd):
@@ -207,35 +219,37 @@ def structure_check():
     M0 = _M0(k1)
     y0 = _y0(k1, c.D1)
     R0 = _R0(k2)
-    print(f'y0={y0}m,M0={M0}N*m,R0={R0}N')
+    logger('——计算位移、弯矩、枕上压力——')
+    logger('最大静位移、弯矩、枕上压力为：y0={:.3f}mm,M0={:.3f}kN*m,R0={:.3f}kN'.format(y0 * 1000, M0 * 0.001, R0 * 0.001))
     # 计算最大动位移、弯矩、枕上压力
     Md = _Md(M0)
     yd = _yd(y0)
     Rd = _Rd(R0)
-    print(f'yd={yd}m,Md={Md}N*m,Rd={Rd}N')
+    logger('最大动位移、弯矩、枕上压力为：yd={:.3f}mm,Md={:.3f}kN*m,Rd={:.3f}kN'.format(yd * 1000, Md * 0.001, Rd * 0.001))
     # 计算锁定时的轨底、轨头应力（温度应力为零）
     sigma_bottom = Md / c.W_bottom
     sigma_top = Md / c.W_top
     sigma_bottom_lock = sigma_bottom + c.sigma_f
     sigma_top_lock = sigma_top + c.sigma_f
     sigma_s_allow = _sigma_s_allow()
-    compare(sigma_bottom_lock, sigma_s_allow, '锁定时的轨底应力', 'Pa')
-    compare(sigma_top_lock, sigma_s_allow, '锁定时的轨头应力', 'Pa')
+    logger('\n——轨道强度检算——')
+    compare(sigma_bottom_lock, sigma_s_allow, '锁定时的轨底应力', 'MPa', -6)
+    compare(sigma_top_lock, sigma_s_allow, '锁定时的轨头应力', 'MPa', -6)
     # 检算轨枕强度
     Mg = _Mg(Rd)
     Mc = _Mc(Rd)
     Mg_allow = _Mg_allow()
     Mc_allow = _Mc_allow()
-    compare(Mg, Mg_allow, '轨下截面正弯矩', 'N*m')
-    compare(Mc, Mc_allow, '中间截面负弯矩', 'N*m')
+    compare(Mg, Mg_allow, '轨下截面正弯矩', 'kN·m', -3)
+    compare(Mc, Mc_allow, '中间截面负弯矩', 'kN·m', -3)
     # 检算道床顶面压应力
     sigma_z_max = _sigma_z_max(Rd)
     sigma_z_allow = _sigma_z_allow()
-    compare(sigma_z_max, sigma_z_allow, '道床应力', 'Pa')
+    compare(sigma_z_max, sigma_z_allow, '道床应力', 'MPa', -6)
     # 检算路基面强度
     sigma_h = _sigma_h(Rd)
     sigma_L_allow = _sigma_L_allow()
-    compare(sigma_h, sigma_L_allow, '路基应力', 'Pa')
+    compare(sigma_h, sigma_L_allow, '路基应力', 'MPa', -6)
 
 
 # 无缝线路部分
@@ -302,20 +316,24 @@ def _tc_allow():
         Q = _Q()
         # 求得变形曲线弦长l
         l = _l(R1=R1, f_0e=c.f_0e, Q=Q)
-
         l0 = c.l0
+        i = 1
         f_0e1 = c.f_0e
         # 比较l与l0的delta
         delta = abs(l - l0)
-        print(f'l={l}m，l0={l0}m，f_0e={f_0e1}，Δ={delta}m。')
+        logger('\n——计算变形曲线弦长——')
+        logger(f'第{i}次迭代：l={l}m，l0={l0}m，f_0e={f_0e1}m，Δ={delta}m。')
         while delta > delta_allow:
+            i += 1
             f_0e1 = _f_0e1(f_0e1, l0, l)
             l0 = l
             l = _l(R1, f_0e1, Q)
             delta = abs(l - l0)
-            print(f'l={l}m，l0={l0}m，f_0e={f_0e1}，Δ={delta}m。')
+            logger(f'第{i}次迭代：l={l}m，l0={l0}m，f_0e={f_0e1}m，Δ={delta}m。')
         P_N = _P_N(f_0e1, l, R1, Q)
-        return _P_allow(P_N)
+        res = _P_allow(P_N)
+        logger('故变形曲线弦长为%.3fm，允许温度力为%.3fkN。' % (l, res / 1000))
+        return res
 
     Pf = 0  # 附加压力为零
     P_allow = _P_allow()
@@ -369,7 +387,7 @@ def _lambda_long(maxPt):
     """长轨条一端的伸缩量"""
     r = _r()
     res = (maxPt - c.P_H) ** 2 / (2 * c.E * c.F * r)
-    if res > 0:
+    if maxPt - c.P_H > 0:
         return res
     else:
         return 0.
@@ -379,7 +397,7 @@ def _lambda_short(maxPt):
     """标准轨一端的伸缩量"""
     r = _r()
     res = (maxPt - c.P_H) * c.l_short / (2 * c.E * c.F) - r * c.l_short ** 2 / (8 * c.E * c.F)
-    if res > 0:
+    if maxPt - c.P_H > 0:
         return res
     else:
         return 0.
@@ -387,9 +405,11 @@ def _lambda_short(maxPt):
 
 def _a0(lambda_long, lambda_short, lambda_long1, lambda_short1):
     """预留轨缝"""
+    if lambda_long + lambda_short > 18e-3:
+        logger('长短轨的伸长量之和大于构造轨缝ag=18mm，不适合铺设无缝线路！！！')
     a_up = c.ag - (lambda_long + lambda_short)
     a_down = lambda_long1 + lambda_short1
-    print(f'a上为{a_up}m，a下为{a_down}m。')
+    logger('a上为%.3fmm，a下为%.3fm。' % (a_up * 1000, a_down * 1000))
     return (a_up + a_down) / 2
 
 
@@ -401,7 +421,8 @@ def cwr():
     tc_allow = _tc_allow()
     # 中和轨温
     te = _te(td_allow, tc_allow)
-    print(f'允许温降为{td_allow}℃，允许温升为{tc_allow}℃，中和轨温为{te}摄氏度')
+    logger('\n——无缝线路强度、稳定性检算——')
+    logger('允许温降为%.3f℃，允许温升为%.3f℃，中和轨温为%.3f℃。' % (td_allow, tc_allow, te))
     # 施工锁定轨温上、下限
     tm, tn = _tm(te), _tn(te)
     # 实际温降、温升
@@ -412,33 +433,88 @@ def cwr():
     compare(tc, tc_allow, '温升', '℃')
     # 最大温度力
     maxPt = _Pt(max(td, tc))
-    print(f'最大温度力：{maxPt}N。')
+    logger('\n——伸缩区长度计算——')
+    logger('最大温度力：%.3fkN。' % (maxPt * 0.001))
     # 伸缩区长度
     ls = _ls(maxPt)
-    print(f'伸缩区长度：{ls}m。')
+    logger('伸缩区长度：%.3fm。' % ls)
     # 从锁定轨温至最低轨温
-    print('从锁定轨温至最低轨温时：')
-    maxPt_0 = _Pt(te - c.t_min)
-    print(f'最大温度力：{maxPt_0}N')
-    # 长轨条一端的伸缩量
-    lambda_long = _lambda_long(maxPt_0)
-    # 标准轨一端的伸缩量
-    lambda_short = _lambda_short(maxPt_0)
-    print(f'长轨条一端的伸缩量={lambda_long}m,标准轨一端的伸缩量={lambda_short}m')
-    # 从锁定轨温至最高轨温
-    print('从锁定轨温至最高轨温时：')
-    maxPt_1 = _Pt(c.t_max - te)
-    print(f'最大温度力：{maxPt_1}N')
-    # 长轨条一端的伸缩量
-    lambda_long1 = _lambda_long(maxPt_1)
-    # 标准轨一端的伸缩量
-    lambda_short1 = _lambda_short(maxPt_1)
-    print(f'长轨条一端的伸缩量={lambda_long1}m,标准轨一端的伸缩量={lambda_short1}m')
-    # 预留轨缝
-    a0 = _a0(lambda_long, lambda_short, lambda_long1, lambda_short1)
-    print(f'预留轨缝为{a0}m。')
+    logger('\n——预留轨缝计算——')
+    X, y = [], []
+    for delta_t in range(-5, 6):
+        te0 = int(te + delta_t)
+        logger(f'从锁定轨温t={te0}℃至最低轨温时：')
+        maxPt_0 = _Pt(te0 - c.t_min)
+        logger('    最大温度力：%.3fkN。' % (maxPt_0 * 0.001))
+        # 长轨条一端的伸缩量
+        lambda_long = _lambda_long(maxPt_0)
+        # 标准轨一端的伸缩量
+        lambda_short = _lambda_short(maxPt_0)
+        logger('    长轨条一端的伸缩量为%.3fmm,标准轨一端的伸缩量为%.3fmm。' % (lambda_long * 1000, lambda_short * 1000))
+        # 从锁定轨温至最高轨温
+        logger(f'从锁定轨温t={te0}℃至最高轨温时：')
+        maxPt_1 = _Pt(c.t_max - te0)
+        logger('    最大温度力：%.3fkN。' % (maxPt_1 * 0.001))
+        # 长轨条一端的伸缩量
+        lambda_long1 = _lambda_long(maxPt_1)
+        # 标准轨一端的伸缩量
+        lambda_short1 = _lambda_short(maxPt_1)
+        logger('    长轨条一端的伸缩量为%.3fmm,标准轨一端的伸缩量为%.3fmm。' % (lambda_long1 * 1000, lambda_short1 * 1000))
+        # 预留轨缝
+        a0 = _a0(lambda_long, lambda_short, lambda_long1, lambda_short1)
+        logger('故预留轨缝为%.3fmm，取整数为%dmm。\n' % (a0 * 1000, round(a0 * 1000)))
+        X.append(te0)
+        y.append(round(a0 * 1000))
+    draw(X, y)
+
+
+def show_result():
+    """展示结果"""
+    # 初始化
+    import tkinter as tk
+    from PIL import Image
+    from PIL import ImageTk
+    global image, im
+    window = tk.Toplevel()
+    window.title('结果')
+    # 文本框
+    txt = tk.Text(window, width=120, height=39, font=('微软雅黑', 12,))
+    txt.insert('insert', log)
+    txt.grid(row=0, column=0)
+    # 图片框
+    image = Image.open("te-a0.jpg")
+    w_, h_ = image.size
+    im = ImageTk.PhotoImage(image)
+    canvas = tk.Canvas(window, height=h_, width=w_)
+    canvas.create_image(w_ / 2, h_ / 2, image=im)
+    canvas.grid(row=0, column=1)
+    # 主窗口循环显示
+    window.mainloop()
+
+
+def draw(X, y):
+    """画出结果图"""
+    import matplotlib.pyplot as plt
+    from matplotlib.pyplot import MultipleLocator
+    plt.plot(X, y, marker='x')
+    # 标题
+    plt.xlabel('$t_e$/℃')
+    plt.ylabel('$a_0$/mm')
+    # 坐标轴刻度
+    x_major_locator = MultipleLocator(1)
+    # 把x轴的刻度间隔设置为1，并存在变量里
+    y_major_locator = MultipleLocator(1)
+    # 把y轴的刻度间隔设置为10，并存在变量里
+    ax = plt.gca()
+    # ax为两条坐标轴的实例
+    ax.xaxis.set_major_locator(x_major_locator)
+    # 把x轴的主刻度设置为1的倍数
+    ax.yaxis.set_major_locator(y_major_locator)
+    # 把y轴的主刻度设置为10的倍数
+    plt.savefig('te-a0.jpg')
 
 
 if __name__ == '__main__':
     structure_check()
     cwr()
+    show_result()

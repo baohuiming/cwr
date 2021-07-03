@@ -40,8 +40,14 @@ def show_window():
 
     def confirm():
         """计算按钮操作"""
+        # 冻结编辑框
+        for entry in entrys:
+            entry.config(state='readonly')
+        # 销毁按钮
+        btn_confirm.destroy()
+        btn_cancel.destroy()
+        btn_default.destroy()
         get_constants()
-        print(constants)
         window.quit()
 
     def cancel():
