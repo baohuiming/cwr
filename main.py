@@ -1,4 +1,5 @@
-import c
+from c import show_window
+from c import constants as c
 from math import exp, cos, sin, tan, pi, sqrt
 
 
@@ -15,7 +16,7 @@ def _y0(k, D):
     u = D / c.a
     Sigma_res = 0
     x = 0
-    for P in [c.axles_weight] * c.axles_number:
+    for P in [c.axles_weight] * int(c.axles_number):
         Sigma_res += P * exp(-1 * k * x) * (cos(k * x) + sin(k * x))
         x += c.axles_wheelbase
     return k / (2 * u) * Sigma_res
@@ -25,9 +26,9 @@ def _M0(k):
     """钢轨弯矩"""
     Sigma_res = 0
     x = 0
-    for P in [c.axles['weight']] * c.axles['number']:
+    for P in [c.axles_weight] * int(c.axles_number):
         Sigma_res += P * exp(-1 * k * x) * (cos(k * x) - sin(k * x))
-        x += c.axles['wheelbase']
+        x += c.axles_wheelbase
     return 1 / (4 * k) * Sigma_res
 
 
@@ -35,9 +36,9 @@ def _R0(k):
     """枕上压力"""
     Sigma_res = 0
     x = 0
-    for P in [c.axles['weight']] * c.axles['number']:
+    for P in [c.axles_weight] * int(c.axles_number):
         Sigma_res += P * exp(-1 * k * x) * (cos(k * x) + sin(k * x))
-        x += c.axles['wheelbase']
+        x += c.axles_wheelbase
     return c.a * k / 2 * Sigma_res
 
 
