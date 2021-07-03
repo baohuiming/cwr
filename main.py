@@ -15,9 +15,9 @@ def _y0(k, D):
     u = D / c.a
     Sigma_res = 0
     x = 0
-    for P in [c.axles['weight']] * c.axles['number']:
+    for P in [c.axles_weight] * c.axles_number:
         Sigma_res += P * exp(-1 * k * x) * (cos(k * x) + sin(k * x))
-        x += c.axles['wheelbase']
+        x += c.axles_wheelbase
     return k / (2 * u) * Sigma_res
 
 
