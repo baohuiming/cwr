@@ -24,7 +24,7 @@ b2,0.40,道床肩宽
 P_H,570e3,接头阻力
 v,160,速度
 R,2000,最小曲线半径
-axles_weight,112.8e3,轴重
+axles_weight,112.8e3,轮重
 axles_wheelbase,2,轴距
 axles_number,3,轴数
 l0,4.0,弹性初始弯曲半波长，通常取4.0m

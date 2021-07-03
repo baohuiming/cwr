@@ -203,23 +203,28 @@ def _sigma_h(Rd):
 
     h1 = c.b / 2 * cotd(c.phi)
     h2 = c.e1 / 2 * cotd(c.phi)
-    if 0 <= c.h <= h1:
+    logger('h1=%.3fm,h2=%.3fm' % (h1, h2))
+    if 0 <= c.h < h1:
+        logger('0≤h<h1')
         return Rd / (c.b * c.e1)
     elif h1 <= c.h <= h2:
+        logger('h1≤h≤h2')
         return Rd / (2 * c.h * c.e1 * tand(c.phi))
     elif c.h > h2:
+        logger('h>h2')
         return Rd / (4 * c.h ** 2 * tand(c.phi) ** 2)
 
 
 def structure_check():
     """准静态结构强度检算"""
+    logger('——计算位移、弯矩、枕上压力——')
     # 计算刚比系数
     k1, k2 = _k(c.D1), _k(c.D2)
+    logger('刚比系数k1=%.4fm^-1，k2=%.4fm^-1。' % (k1, k2))
     # 计算最大静位移、弯矩、枕上压力
     M0 = _M0(k1)
     y0 = _y0(k1, c.D1)
     R0 = _R0(k2)
-    logger('——计算位移、弯矩、枕上压力——')
     logger('最大静位移、弯矩、枕上压力为：y0={:.3f}mm,M0={:.3f}kN*m,R0={:.3f}kN'.format(y0 * 1000, M0 * 0.001, R0 * 0.001))
     # 计算最大动位移、弯矩、枕上压力
     Md = _Md(M0)
