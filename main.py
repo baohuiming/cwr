@@ -182,7 +182,7 @@ def compare(S, R, text: str, unit: str, rate: float = 0.):
     if S <= R:
         logger(f'{text}为{_S}{unit}，允许{text}为{_R}{unit}，故{text}满足要求。')
     else:
-        logger(f'{text}为{_S}{unit}，允许{text}为{_R}{unit}，故{text}不满足要求！！！')
+        logger(f'【警告】{text}为{_S}{unit}，允许{text}为{_R}{unit}，故{text}不满足要求！')
 
 
 def _sigma_z_max(Rd):
@@ -404,7 +404,11 @@ def _lambda_short(maxPt):
     r = _r()
     res = (maxPt - c.P_H) * c.l_short / (2 * c.E * c.F) - r * c.l_short ** 2 / (8 * c.E * c.F)
     if maxPt - c.P_H > 0:
-        return res
+        if res < 0:
+            """温度力过小，需按长轨计算"""
+            return _lambda_long(maxPt)
+        else:
+            return res
     else:
         return 0.
 
@@ -454,7 +458,7 @@ def cwr():
         lambda_long = _lambda_long(maxPt_0)
         # 标准轨一端的伸缩量
         lambda_short = _lambda_short(maxPt_0)
-        logger('    长轨条一端的伸缩量为%.3fmm,标准轨一端的伸缩量为%.3fmm。' % (lambda_long * 1000, lambda_short * 1000))
+        logger('    长轨条一端的缩短量为%.3fmm,标准轨一端的缩短量为%.3fmm。' % (lambda_long * 1000, lambda_short * 1000))
         # 从锁定轨温至最高轨温
         logger(f'从锁定轨温t={te0}℃至最高轨温时：')
         maxPt_1 = _Pt(c.t_max - te0)
@@ -463,16 +467,18 @@ def cwr():
         lambda_long1 = _lambda_long(maxPt_1)
         # 标准轨一端的伸缩量
         lambda_short1 = _lambda_short(maxPt_1)
-        logger('    长轨条一端的伸缩量为%.3fmm,标准轨一端的伸缩量为%.3fmm。' % (lambda_long1 * 1000, lambda_short1 * 1000))
+        logger('    长轨条一端的伸长量为%.3fmm,标准轨一端的伸长量为%.3fmm。' % (lambda_long1 * 1000, lambda_short1 * 1000))
         # 预留轨缝
         a0 = _a0(lambda_long, lambda_short, lambda_long1, lambda_short1)
         if lambda_long + lambda_short > 18e-3:
-            logger('长短轨的伸长量之和大于构造轨缝ag=18mm，不适合铺设无缝线路！！！\n')
+            logger('【警告】长短轨的缩短量之和大于构造轨缝ag=18mm，不适合铺设无缝线路！\n')
+        elif a0 <= 0:
+            logger('【警告】计算预留轨缝不大于0，不适合铺设无缝线路！\n')
         else:
             logger('故预留轨缝为%.3fmm，取整数为%dmm。\n' % (a0 * 1000, round(a0 * 1000)))
             X.append(te0)
             y.append(round(a0 * 1000))
-    draw(X, y)
+    return X, y
 
 
 def show_result():
@@ -499,8 +505,9 @@ def show_result():
     window.mainloop()
 
 
-def draw(X, y):
+def draw(X, y, filename: str = 'te-a0.jpg'):
     """画出结果图"""
+    from clipboard import paste_img
     import matplotlib.pyplot as plt
     from matplotlib.pyplot import MultipleLocator
     plt.plot(X, y, marker='x')
@@ -518,10 +525,14 @@ def draw(X, y):
     # 把x轴的主刻度设置为1的倍数
     ax.yaxis.set_major_locator(y_major_locator)
     # 把y轴的主刻度设置为10的倍数
-    plt.savefig('te-a0.jpg')
+    # 保存图片
+    plt.savefig(filename)
+    # 将图片复制到剪贴板中
+    paste_img(filename)
 
 
 if __name__ == '__main__':
     structure_check()
-    cwr()
+    X, y = cwr()
+    draw(X, y, )
     show_result()
