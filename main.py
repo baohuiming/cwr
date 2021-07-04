@@ -641,6 +641,20 @@ def draw_f_0ps(f_0ps: str = '0.001、0.0015、0.002、0.0025、0.003'):
     draws(Xs, ys, f_0ps, filename='te-a0-f_0ps.jpg')
 
 
+def draw_axles_weights(axles_weights: str = '70000、80000、90000、100000、112800、150000、200000'):
+    """不同轴重"""
+    global c
+    Xs, ys = [], []
+    axles_weights = axles_weights.split('、')
+    for _axles_weight in axles_weights:
+        c = edit_constant(_param={'name': 'axles_weight', 'value': _axles_weight})
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, axles_weights, filename='te-a0-axles_weights.jpg')
+
+
 def main():
     global c
     c = edit_constant()
@@ -651,4 +665,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_f_0ps()
+    draw_axles_weights()
