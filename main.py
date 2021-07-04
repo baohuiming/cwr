@@ -655,6 +655,20 @@ def draw_axles_weights(axles_weights: str = '70000、80000、90000、100000、11
     draws(Xs, ys, axles_weights, filename='te-a0-axles_weights.jpg')
 
 
+def draw_axles_wheelbases(axles_wheelbases: str = '1、2、3、4、5'):
+    """不同轴距"""
+    global c
+    Xs, ys = [], []
+    axles_wheelbases = axles_wheelbases.split('、')
+    for _axles_wheelbase in axles_wheelbases:
+        c = edit_constant(_param={'name': 'axles_wheelbase', 'value': _axles_wheelbase})
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, axles_wheelbases, filename='te-a0-axles_wheelbases.jpg')
+
+
 def main():
     global c
     c = edit_constant()
@@ -665,4 +679,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_axles_weights()
+    draw_axles_wheelbases()
