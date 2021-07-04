@@ -495,7 +495,7 @@ def show_result():
     txt.insert('insert', log)
     txt.grid(row=0, column=0, padx=3, pady=3)
     # 图片框
-    image = Image.open("te-a0.jpg")
+    image = Image.open("result/te-a0.jpg")
     w_, h_ = image.size
     im = ImageTk.PhotoImage(image)
     canvas = tk.Canvas(window, height=h_, width=w_)
@@ -596,7 +596,7 @@ def draw_citys(citys: str = '哈尔滨、乌鲁木齐、沈阳、北京、青岛
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, citys, filename='te-a0-citys.jpg')
+    draws(Xs, ys, citys, filename='result/te-a0-citys.jpg')
 
 
 def draw_Rs(Rs: str = '2000、2500、3000、3500、4000、4500、5000'):
@@ -610,7 +610,7 @@ def draw_Rs(Rs: str = '2000、2500、3000、3500、4000、4500、5000'):
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, Rs, filename='te-a0-Rs.jpg')
+    draws(Xs, ys, Rs, filename='result/te-a0-Rs.jpg')
 
 
 def draw_hs(hs: str = '0.2、0.3、0.4、0.5、0.6'):
@@ -624,7 +624,7 @@ def draw_hs(hs: str = '0.2、0.3、0.4、0.5、0.6'):
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, hs, filename='te-a0-hs.jpg')
+    draws(Xs, ys, hs, filename='result/te-a0-hs.jpg')
 
 
 def draw_f_0ps(f_0ps: str = '0.001、0.0015、0.002、0.0025、0.003'):
@@ -638,7 +638,7 @@ def draw_f_0ps(f_0ps: str = '0.001、0.0015、0.002、0.0025、0.003'):
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, f_0ps, filename='te-a0-f_0ps.jpg')
+    draws(Xs, ys, f_0ps, filename='result/te-a0-f_0ps.jpg')
 
 
 def draw_axles_weights(axles_weights: str = '70000、80000、90000、100000、112800、150000、200000'):
@@ -652,7 +652,7 @@ def draw_axles_weights(axles_weights: str = '70000、80000、90000、100000、11
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, axles_weights, filename='te-a0-axles_weights.jpg')
+    draws(Xs, ys, axles_weights, filename='result/te-a0-axles_weights.jpg')
 
 
 def draw_axles_wheelbases(axles_wheelbases: str = '1、2、3、4、5'):
@@ -666,7 +666,7 @@ def draw_axles_wheelbases(axles_wheelbases: str = '1、2、3、4、5'):
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, axles_wheelbases, filename='te-a0-axles_wheelbases.jpg')
+    draws(Xs, ys, axles_wheelbases, filename='result/te-a0-axles_wheelbases.jpg')
 
 
 def draw_axles_numbers(axles_numbers: str = '1、2、3、4、5'):
@@ -680,7 +680,7 @@ def draw_axles_numbers(axles_numbers: str = '1、2、3、4、5'):
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, axles_numbers, filename='te-a0-axles_numbers.jpg')
+    draws(Xs, ys, axles_numbers, filename='result/te-a0-axles_numbers.jpg')
 
 
 def draw_l_shorts(l_shorts: str = '12.5、25、50、100、250、500'):
@@ -694,7 +694,7 @@ def draw_l_shorts(l_shorts: str = '12.5、25、50、100、250、500'):
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, l_shorts, filename='te-a0-l_shorts.jpg')
+    draws(Xs, ys, l_shorts, filename='result/te-a0-l_shorts.jpg')
 
 
 def draw_b2s(b2s: str = '0.3、0.4'):
@@ -708,7 +708,7 @@ def draw_b2s(b2s: str = '0.3、0.4'):
         X, y = cwr()
         Xs.append(X)
         ys.append(y)
-    draws(Xs, ys, b2s, filename='te-a0-b2s.jpg')
+    draws(Xs, ys, b2s, filename='result/te-a0-b2s.jpg')
 
 
 def main():
