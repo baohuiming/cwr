@@ -613,6 +613,20 @@ def draw_Rs(Rs: str = '2000、2500、3000、3500、4000、4500、5000'):
     draws(Xs, ys, Rs, filename='te-a0-Rs.jpg')
 
 
+def draw_hs(hs: str = '0.2、0.3、0.4、0.5、0.6'):
+    """不同道床厚度"""
+    global c
+    Xs, ys = [], []
+    hs = hs.split('、')
+    for _h in hs:
+        c = edit_constant(_param={'name': 'h', 'value': _h})
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, hs, filename='te-a0-hs.jpg')
+
+
 def main():
     global c
     c = edit_constant()
@@ -623,4 +637,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_Rs()
+    draw_hs()
