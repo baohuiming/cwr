@@ -697,6 +697,20 @@ def draw_l_shorts(l_shorts: str = '12.5、25、50、100、250、500'):
     draws(Xs, ys, l_shorts, filename='te-a0-l_shorts.jpg')
 
 
+def draw_b2s(b2s: str = '0.3、0.4'):
+    """不同道砟肩宽"""
+    global c
+    Xs, ys = [], []
+    b2s = b2s.split('、')
+    for _b2 in b2s:
+        c = edit_constant(_param={'name': 'b2', 'value': _b2})
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, b2s, filename='te-a0-b2s.jpg')
+
+
 def main():
     global c
     c = edit_constant()
@@ -707,4 +721,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_l_shorts()
+    draw_b2s()

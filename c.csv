@@ -24,7 +24,7 @@ phi,35,压力扩散角度φ，通常取35°
 b2,0.40,道床肩宽
 P_H,570e3,接头阻力
 v,160,速度
-R,2000,最小曲线半径
+R,2000,曲线半径
 axles_weight,112.8e3,轮重
 axles_wheelbase,2,轴距
 axles_number,3,轴数
