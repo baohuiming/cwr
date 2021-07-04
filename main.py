@@ -54,12 +54,13 @@ def _R0(k):
 
 def _alpha(v) -> list:
     """速度系数"""
+    alpha_1_k = {'电力': 0.6, '内燃': 0.4}[c.traction_type]
     if v < 120:
-        return [0.6 * v / 100]
+        return [alpha_1_k * v / 100]
     elif 120 < v <= 160:
-        return [0.6 * 120 / 100, 0.3 * (v - 120) / 100]
+        return [alpha_1_k * 120 / 100, 0.3 * (v - 120) / 100]
     else:
-        return [0.6 * 120 / 100, 0.3 * (160 - 120) / 100, 0.3 * (v - 160) / 100]
+        return [alpha_1_k * 120 / 100, 0.3 * (160 - 120) / 100, 0.3 * (v - 160) / 100]
 
 
 def _beta(delta_h=75):
@@ -176,12 +177,12 @@ def _Mc_allow():
 
 def compare(S, R, text: str, unit: str, rate: float = 0.):
     """S为作用效应，R为结构抗力"""
-    S = '%.3f' % (S * 10 ** rate)
-    R = '%.3f' % (R * 10 ** rate)
+    _S = '%.3f' % (S * 10 ** rate)
+    _R = '%.3f' % (R * 10 ** rate)
     if S <= R:
-        logger(f'{text}为{S}{unit}，允许{text}为{R}{unit}，故{text}满足要求。')
+        logger(f'{text}为{_S}{unit}，允许{text}为{_R}{unit}，故{text}满足要求。')
     else:
-        logger(f'{text}为{S}{unit}，允许{text}为{R}{unit}，故{text}不满足要求！！！')
+        logger(f'{text}为{_S}{unit}，允许{text}为{_R}{unit}，故{text}不满足要求！！！')
 
 
 def _sigma_z_max(Rd):
@@ -485,7 +486,7 @@ def show_result():
     # 文本框
     txt = tk.Text(window, width=120, height=39, font=('微软雅黑', 12,))
     txt.insert('insert', log)
-    txt.grid(row=0, column=0)
+    txt.grid(row=0, column=0, padx=3, pady=3)
     # 图片框
     image = Image.open("te-a0.jpg")
     w_, h_ = image.size

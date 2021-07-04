@@ -18,6 +18,7 @@ a,0.5682,轨枕间距
 life_type,新轨,钢轨类型
 bed_type,碎石,道床类型
 soil_type,新建砂黏土,路基类型
+traction_type,内燃,牵引类型
 sleeper_type,3,轨枕类型
 phi,35,压力扩散角度φ，通常取35°
 b2,0.40,道床肩宽
