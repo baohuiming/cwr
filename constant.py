@@ -27,7 +27,7 @@ def load_csv(filename: str = 'c.csv') -> list:
     return data
 
 
-def show_window(_city: str = None):
+def show_window(_city: str = None, _param: str = None):
     # 初始化
     import tkinter as tk
     from math import ceil
@@ -145,11 +145,19 @@ def show_window(_city: str = None):
         entry()
         # 计算
         confirm()
+    elif _param:
+        # 如果指定了别的参数
+        for idx, row in enumerate(data):
+            if row[0] == _param['name']:
+                entrys[idx].delete(0, tk.END)
+                entrys[idx].insert(1, _param['value'])
+        # 计算
+        confirm()
     else:
         # 主窗口循环显示
         window.mainloop()
 
 
-def edit_constant(city: str = None):
-    show_window(city)
+def edit_constant(_city: str = None, _param: dict = None):
+    show_window(_city=_city, _param=_param)
     return constants

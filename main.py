@@ -605,7 +605,7 @@ def draw_Rs(Rs: str = '2000、2500、3000、3500、4000、4500、5000'):
     Xs, ys = [], []
     Rs = Rs.split('、')
     for _R in Rs:
-        c = edit_constant(R=Rs)
+        c = edit_constant(_param={'name': 'R', 'value': _R})
         structure_check()
         X, y = cwr()
         Xs.append(X)
@@ -623,4 +623,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_citys()
+    draw_Rs()
