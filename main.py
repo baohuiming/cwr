@@ -683,6 +683,20 @@ def draw_axles_numbers(axles_numbers: str = '1、2、3、4、5'):
     draws(Xs, ys, axles_numbers, filename='te-a0-axles_numbers.jpg')
 
 
+def draw_l_shorts(l_shorts: str = '12.5、25、50、100、250、500'):
+    """不同标准轨长度"""
+    global c
+    Xs, ys = [], []
+    l_shorts = l_shorts.split('、')
+    for _l_short in l_shorts:
+        c = edit_constant(_param={'name': 'l_short', 'value': _l_short})
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, l_shorts, filename='te-a0-l_shorts.jpg')
+
+
 def main():
     global c
     c = edit_constant()
@@ -693,4 +707,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_axles_numbers()
+    draw_l_shorts()
