@@ -505,35 +505,122 @@ def show_result():
     window.mainloop()
 
 
-def draw(X, y, filename: str = 'te-a0.jpg'):
+def draw(X, y, save: bool = True, filename: str = 'te-a0.jpg'):
     """画出结果图"""
     from clipboard import paste_img
     import matplotlib.pyplot as plt
     from matplotlib.pyplot import MultipleLocator
+    from matplotlib.font_manager import FontProperties  # 字体管理器
+
+    # 设置汉字格式
+    font = FontProperties(fname=r"c:\windows\fonts\simsun.ttc", size=15)
     plt.plot(X, y, marker='x')
     # 标题
-    plt.xlabel('$t_e$/℃')
-    plt.ylabel('$a_0$/mm')
+    plt.xlabel('锁定轨温$t_e$/℃', fontproperties=font)
+    plt.ylabel('预留轨缝$a_0$/mm', fontproperties=font)
     # 坐标轴刻度
     x_major_locator = MultipleLocator(1)
     # 把x轴的刻度间隔设置为1，并存在变量里
     y_major_locator = MultipleLocator(1)
-    # 把y轴的刻度间隔设置为10，并存在变量里
+    # 把y轴的刻度间隔设置为1，并存在变量里
+    ax = plt.gca()
+    # ax为两条坐标轴的实例
+    ax.xaxis.set_major_locator(x_major_locator)
+    # 把x轴的主刻度设置为1的倍数
+    ax.yaxis.set_major_locator(y_major_locator)
+    # 把y轴的主刻度设置为1的倍数
+    if save:
+        # 保存图片
+        plt.savefig(filename)
+        # 将图片复制到剪贴板中
+        paste_img(filename)
+
+
+def draws(Xs, ys, labels: list, save: bool = True, filename: str = 'te-a0.jpg'):
+    """画出结果图"""
+    from clipboard import paste_img
+    import matplotlib.pyplot as plt
+    from matplotlib.pyplot import MultipleLocator
+    from matplotlib.font_manager import FontProperties  # 字体管理器
+
+    def random_color():
+        """生成随机颜色"""
+        import random
+        colorArr = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+        color = ""
+        for i in range(6):
+            color += colorArr[random.randint(0, 14)]
+        return "#" + color
+
+    # 设置汉字格式
+    font = FontProperties(fname=r"c:\windows\fonts\simsun.ttc", size=15)
+    # 设置图像大小
+    plt.figure(figsize=(16, 10))
+
+    print(Xs, ys)
+
+    l = []
+    for i in range(len(Xs)):
+        l.append(tuple(plt.plot(Xs[i], ys[i], marker='x', color=random_color())))
+    plt.legend(handles=l, labels=labels, prop=font, ncol=2)
+
+    # 标题
+    plt.xlabel('锁定轨温$t_e$/℃', fontproperties=font)
+    plt.ylabel('预留轨缝$a_0$/mm', fontproperties=font)
+    # 坐标轴刻度
+    x_major_locator = MultipleLocator(1)
+    # 把x轴的刻度间隔设置为1，并存在变量里
+    y_major_locator = MultipleLocator(1)
+    # 把y轴的刻度间隔设置为1，并存在变量里
     ax = plt.gca()
     # ax为两条坐标轴的实例
     ax.xaxis.set_major_locator(x_major_locator)
     # 把x轴的主刻度设置为1的倍数
     ax.yaxis.set_major_locator(y_major_locator)
     # 把y轴的主刻度设置为10的倍数
-    # 保存图片
-    plt.savefig(filename)
-    # 将图片复制到剪贴板中
-    paste_img(filename)
+    if save:
+        # 保存图片
+        plt.savefig(filename)
+        # 将图片复制到剪贴板中
+        paste_img(filename)
 
 
-if __name__ == '__main__':
+def draw_citys(citys: str = '哈尔滨、乌鲁木齐、沈阳、北京、青岛、敦煌、郑州、武汉、绵阳、南昌、南京、福州、拉萨、昆明、广州'):
+    """不同城市"""
+    global c
+    Xs, ys = [], []
+    citys = citys.split('、')
+    for city in citys:
+        c = edit_constant(_city=city)
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, citys, filename='te-a0-citys.jpg')
+
+
+def draw_Rs(Rs: str = '2000、2500、3000、3500、4000、4500、5000'):
+    """不同曲线半径"""
+    global c
+    Xs, ys = [], []
+    Rs = Rs.split('、')
+    for _R in Rs:
+        c = edit_constant(R=Rs)
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, Rs, filename='te-a0-Rs.jpg')
+
+
+def main():
+    global c
     c = edit_constant()
     structure_check()
     X, y = cwr()
     draw(X, y, )
     show_result()
+
+
+if __name__ == '__main__':
+    draw_citys()
