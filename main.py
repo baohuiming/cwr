@@ -1,8 +1,8 @@
-from constant import constants as c
+from constant import edit_constant
 from math import exp, cos, sin, tan, pi, sqrt
 
+c = None
 log = ''
-
 image = None
 im = None
 
@@ -532,6 +532,7 @@ def draw(X, y, filename: str = 'te-a0.jpg'):
 
 
 if __name__ == '__main__':
+    c = edit_constant()
     structure_check()
     X, y = cwr()
     draw(X, y, )

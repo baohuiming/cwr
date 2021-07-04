@@ -27,7 +27,7 @@ def load_csv(filename: str = 'c.csv') -> list:
     return data
 
 
-def show_window():
+def show_window(_city: str = None):
     # 初始化
     import tkinter as tk
     from math import ceil
@@ -134,8 +134,22 @@ def show_window():
     btn_cancel.grid(row=len(data) + 1, column=3, ipadx=30, pady=5)
     btn_default.grid(row=len(data) + 1, column=4, ipadx=30, pady=5)
 
-    # 主窗口循环显示
-    window.mainloop()
+    if _city:
+        # 如果指定了城市
+        # 切换城市
+        city.delete(0, tk.END)
+        city.insert(0, _city)
+        # 查轨温
+        query()
+        # 填入轨温
+        entry()
+        # 计算
+        confirm()
+    else:
+        # 主窗口循环显示
+        window.mainloop()
 
 
-show_window()
+def edit_constant(city: str = None):
+    show_window(city)
+    return constants
