@@ -411,8 +411,6 @@ def _lambda_short(maxPt):
 
 def _a0(lambda_long, lambda_short, lambda_long1, lambda_short1):
     """预留轨缝"""
-    if lambda_long + lambda_short > 18e-3:
-        logger('长短轨的伸长量之和大于构造轨缝ag=18mm，不适合铺设无缝线路！！！')
     a_up = c.ag - (lambda_long + lambda_short)
     a_down = lambda_long1 + lambda_short1
     logger('a上为%.3fmm，a下为%.3fm。' % (a_up * 1000, a_down * 1000))
@@ -468,9 +466,12 @@ def cwr():
         logger('    长轨条一端的伸缩量为%.3fmm,标准轨一端的伸缩量为%.3fmm。' % (lambda_long1 * 1000, lambda_short1 * 1000))
         # 预留轨缝
         a0 = _a0(lambda_long, lambda_short, lambda_long1, lambda_short1)
-        logger('故预留轨缝为%.3fmm，取整数为%dmm。\n' % (a0 * 1000, round(a0 * 1000)))
-        X.append(te0)
-        y.append(round(a0 * 1000))
+        if lambda_long + lambda_short > 18e-3:
+            logger('长短轨的伸长量之和大于构造轨缝ag=18mm，不适合铺设无缝线路！！！\n')
+        else:
+            logger('故预留轨缝为%.3fmm，取整数为%dmm。\n' % (a0 * 1000, round(a0 * 1000)))
+            X.append(te0)
+            y.append(round(a0 * 1000))
     draw(X, y)
 
 
