@@ -627,6 +627,20 @@ def draw_hs(hs: str = '0.2、0.3、0.4、0.5、0.6'):
     draws(Xs, ys, hs, filename='te-a0-hs.jpg')
 
 
+def draw_f_0ps(f_0ps: str = '0.001、0.0015、0.002、0.0025、0.003'):
+    """不同塑性初始弯曲"""
+    global c
+    Xs, ys = [], []
+    f_0ps = f_0ps.split('、')
+    for _f_0p in f_0ps:
+        c = edit_constant(_param={'name': 'f_0p', 'value': _f_0p})
+        structure_check()
+        X, y = cwr()
+        Xs.append(X)
+        ys.append(y)
+    draws(Xs, ys, f_0ps, filename='te-a0-f_0ps.jpg')
+
+
 def main():
     global c
     c = edit_constant()
@@ -637,4 +651,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_hs()
+    draw_f_0ps()
