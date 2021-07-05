@@ -734,4 +734,4 @@ def main():
 
 
 if __name__ == '__main__':
-    draw_all()
+    main()
