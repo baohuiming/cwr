@@ -9,7 +9,7 @@ im = None
 
 def logger(text):
     global log
-    print(text)
+    # print(text)
     log += text + '\n'
 
 
@@ -404,8 +404,8 @@ def _lambda_short(maxPt):
     r = _r()
     res = (maxPt - c.P_H) * c.l_short / (2 * c.E * c.F) - r * c.l_short ** 2 / (8 * c.E * c.F)
     if maxPt - c.P_H > 0:
-        if res < 0:
-            """温度力过小，需按长轨计算"""
+        if (maxPt - c.P_H) < (r * c.l_short / 2):
+            """当温度力小于纵向阻力r×l/2时，当成长轨计算"""
             return _lambda_long(maxPt)
         else:
             return res
@@ -505,7 +505,7 @@ def show_result():
     window.mainloop()
 
 
-def draw(X, y, save: bool = True, filename: str = 'te-a0.jpg'):
+def draw(X, y, save: bool = True, filename: str = 'result/te-a0.jpg'):
     """画出结果图"""
     from clipboard import paste_img
     import matplotlib.pyplot as plt
@@ -711,6 +711,19 @@ def draw_b2s(b2s: str = '0.3、0.4'):
     draws(Xs, ys, b2s, filename='result/te-a0-b2s.jpg')
 
 
+def draw_all():
+    """画出所有不同参数的图"""
+    draw_axles_numbers()
+    draw_axles_weights()
+    draw_axles_wheelbases()
+    draw_b2s()
+    draw_f_0ps()
+    draw_hs()
+    draw_l_shorts()
+    draw_Rs()
+    draw_citys()
+
+
 def main():
     global c
     c = edit_constant()
@@ -721,4 +734,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    draw_all()
