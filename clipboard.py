@@ -1,5 +1,6 @@
 # coding: utf-8
 
+# https://www.cnblogs.com/enumx/p/12359863.html
 # pip install pillow, 用Image模块操作图片文件
 from PIL import Image
 
